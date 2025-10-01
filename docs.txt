@@ -1,2 +1,8 @@
-# Here will be the documentation for app
-#
+#Activate environment
+# Windows:
+# python -m venv env
+# .\env\Scripts\activate
+# pip install -r requirements.txt
+# Mac/Linux:
+# python3 -m venv env
+# source env/bin/activate

@@ -1,0 +1,4 @@
+Flask==2.3.2
+uvicorn==0.23.0
+fastapi==0.111.0  # only if using FastAPI instead of Flask
+requests==2.31.0

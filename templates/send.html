@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TalentMap - Requests Sent</title>
+</head>
+<body>
+    <h1>Internship Requests Sent!</h1>
+    <p>You sent requests to the following companies:</p>
+    <ul>
+        {% for company in selected %}
+        <li>{{ company.name }} ({{ company.contact }})</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Back to Home</a>
+</body>
+</html>

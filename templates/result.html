@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TalentMap - Results</title>
+    <style>
+        #companies { max-height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Results for "{{ skill }}"</h1>
+    <p>Number of companies: {{ count }}</p>
+
+    <form method="POST" action="/send_request">
+        <label><input type="checkbox" id="select_all"> Select All</label>
+        <div id="companies">
+            {% for company in filtered %}
+            <div>
+                <label>
+                    <input type="checkbox" name="company" value="{{ company.id }}">
+                    {{ company.name }} ({{ company.workplace }}) - {{ company.contact }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit">Send Internship Request</button>
+    </form>
+
+    <script>
+        const selectAll = document.getElementById("select_all");
+        selectAll.addEventListener("change", function() {
+            const checkboxes = document.querySelectorAll('input[name="company"]');
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        });
+    </script>
+</body>
+</html>
