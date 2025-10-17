@@ -1,15 +1,16 @@
 # 🎯 TalentMap - Job Scraper & Application Tracker
 
-A modern Flask web application that helps you find internship and job opportunities in Finland by scraping job listings from Duunitori.fi.
+This Flask web application was created as a fun training project to explore 
+web scraping methodologies using **BeautifulSoup4**, **Requests**, and other 
+Python libraries. 
 
-## ✨ Features
+The application automates the internship search process by:
+- 🔍 Scraping job listings from Finnish job portals (Duunitori.fi)
+- 📊 Extracting and organizing company information
+- 📧 Collecting contact details (emails, phone numbers)
+- ✅ Streamlining the application workflow
 
-- 🔍 **Smart Job Search** - Search for positions by skill or job title
-- 🏢 **Company Information** - Extract company names, locations, and contact details
-- 📧 **Contact Details** - Automatically find email addresses and phone numbers
-- ✅ **Bulk Selection** - Select multiple companies to send applications
-- 🎨 **Modern UI** - Beautiful gradient design with smooth animations
-- 📱 **Responsive** - Works seamlessly on desktop and mobile devices
+**Built with:** Flask, BeautifulSoup4, Requests, and a passion for automation! 
 
 ## 🚀 Quick Start
 
