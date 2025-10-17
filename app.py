@@ -149,13 +149,37 @@ def scrape_duunitori(keyword):
     
     return jobs
 
+# @app.route("/", methods=["GET", "POST"])
+# def home():
+#     if request.method == "POST":
+#         skill = request.form.get("skill", "").strip()
+        
+#         if not skill:
+#             return render_template("home.html", error="Please enter a skill or position")
+        
+#         # Scrape jobs based on skill
+#         jobs = scrape_duunitori(skill)
+        
+#         return render_template("result.html", 
+#                              skill=skill, 
+#                              filtered=jobs, 
+#                              count=len(jobs))
+    
+#     return render_template("home.html")
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
-        skill = request.form.get("skill", "").strip()
+        position = request.form.get("position", "").strip()
+        custom_skill = request.form.get("customSkill", "").strip()
+        
+        # Use custom skill if "Other (Custom)" is selected
+        skill = custom_skill if position == "Other (Custom)" and custom_skill else position
         
         if not skill:
-            return render_template("home.html", error="Please enter a skill or position")
+            return render_template("home.html", 
+                                 positions=COMMON_POSITIONS,
+                                 error="Please select or enter a position")
         
         # Scrape jobs based on skill
         jobs = scrape_duunitori(skill)
@@ -165,7 +189,8 @@ def home():
                              filtered=jobs, 
                              count=len(jobs))
     
-    return render_template("home.html")
+    # GET request - MUST pass positions here!
+    return render_template("home.html", positions=COMMON_POSITIONS)
 
 @app.route('/scrape', methods=['POST'])
 def scrape():
