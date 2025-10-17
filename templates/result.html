@@ -2,29 +2,268 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TalentMap - Results</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results - TalentMap</title>
     <style>
-        #companies { max-height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.2rem;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #5568d3;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .summary p {
+            margin: 8px 0;
+            color: #555;
+            font-size: 1.1rem;
+        }
+        
+        .summary strong {
+            color: #333;
+        }
+        
+        .select-section {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .select-all-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        #companies {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            background: #fafafa;
+        }
+        
+        .company-item {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .company-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        
+        .company-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            cursor: pointer;
+        }
+        
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .company-details {
+            flex: 1;
+        }
+        
+        .company-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .company-info {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .send-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .send-btn:active {
+            transform: translateY(0);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        /* Custom scrollbar */
+        #companies::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        #companies::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        #companies::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+        
+        #companies::-webkit-scrollbar-thumb:hover {
+            background: #5568d3;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .company-item {
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Results for "{{ skill }}"</h1>
-    <p>Number of companies: {{ count }}</p>
+    <div class="container">
+        <a href="/" class="back-btn">← Back to Search</a>
+        
+        <h1>📋 Search Results for "{{ skill }}"</h1>
+        
+        <div class="summary">
+            <p><strong>📊 Total Companies Found:</strong> {{ count }}</p>
+            <p><strong>🔍 Search Term:</strong> {{ skill }}</p>
+            <p><strong>🌐 Provider:</strong> Duunitori.fi</p>
+        </div>
 
-    <form method="POST" action="/send_request">
-        <label><input type="checkbox" id="select_all"> Select All</label>
-        <div id="companies">
-            {% for company in filtered %}
-            <div>
-                <label>
-                    <input type="checkbox" name="company" value="{{ company.id }}">
-                    {{ company.name }} ({{ company.workplace }}) - {{ company.contact }}
+        <form method="POST" action="/send_request">
+            <div class="select-section">
+                <label class="select-all-label">
+                    <input type="checkbox" id="select_all">
+                    <span>✅ Select All Companies</span>
                 </label>
             </div>
-            {% endfor %}
-        </div>
-        <button type="submit">Send Internship Request</button>
-    </form>
+            
+            <div id="companies">
+                {% if filtered %}
+                    {% for company in filtered %}
+                    <div class="company-item">
+                        <label class="company-label">
+                            <input type="checkbox" name="company" value="{{ company.id }}">
+                            <div class="company-details">
+                                <div class="company-name">🏢 {{ company.name }}</div>
+                                <div class="company-info">
+                                    {% if company.workplace %}
+                                        📍 {{ company.workplace }}
+                                    {% endif %}
+                                    {% if company.contact %}
+                                        {% if company.workplace %} • {% endif %}
+                                        📧 {{ company.contact }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-results">
+                        <div class="no-results-icon">😔</div>
+                        <p>No companies found for "{{ skill }}"</p>
+                        <p style="font-size: 1rem; margin-top: 10px;">Try searching with different keywords</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            {% if filtered %}
+            <button type="submit" class="send-btn">📤 Send Internship Request to Selected Companies</button>
+            {% endif %}
+        </form>
+    </div>
 
     <script>
         const selectAll = document.getElementById("select_all");
