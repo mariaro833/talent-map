@@ -41,6 +41,14 @@ Clone the repository:
 git clone https://github.com/yourusername/talentmap.git
 cd talentmap
 
+#Activate environment:
+
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r .\requirements.txt
+```
+
 ## Project strucutre: 
 ``` talentmap/
 │── app.py 
@@ -51,4 +59,6 @@ cd talentmap
 │   ├── results.html  
 │   └── sent.html  
 │── static/
+│   └── style.css
 │── README.md  
+```
