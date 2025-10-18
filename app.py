@@ -6,6 +6,7 @@ from urllib.parse import quote
 import json
 import os
 
+
 app = Flask(__name__)
 
 DATA_FILE = "companies.json"
@@ -21,6 +22,7 @@ else:
 def save_data():
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(companies, f, ensure_ascii=False, indent=4)
+
 
 # Common job positions for dropdown
 COMMON_POSITIONS = [
@@ -44,111 +46,55 @@ COMMON_POSITIONS = [
 
 
 def scrape_duunitori(keyword):
-    """Scrape job listings from Duunitori"""
     jobs = []
-    
     try:
-        search_url = f"https://duunitori.fi/tyopaikat?haku={quote(keyword)}"
-        
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-        
+        search_url = f"https://duunitori.fi/tyopaikat?haku={keyword}"
+        headers = {'User-Agent': 'Mozilla/5.0'}
         response = requests.get(search_url, headers=headers, timeout=10)
-        response.raise_for_status()
-        
         soup = BeautifulSoup(response.content, 'html.parser')
-        
-        # Try multiple selector strategies for Duunitori
-        job_cards = soup.find_all('a', {'data-action': 'job-box-click'})
-        
-        if not job_cards:
-            job_cards = soup.find_all('div', class_='job-box')
-        
-        if not job_cards:
-            job_cards = soup.find_all(['article', 'div'], class_=re.compile(r'job|listing|vacancy', re.I))
-        
+
+        job_cards = soup.select('a.job-box__hover.gtm-search-result')
+
         for card in job_cards[:20]:
             try:
                 job_data = {
                     'id': len(jobs) + 1,
-                    'name': 'N/A',
-                    'title': 'N/A',
+                    'name': card.get('data-company', 'N/A'),
+                    'title': card.get_text(strip=True),
                     'workplace': None,
                     'contact': None,
                     'email': None,
                     'phone': None,
-                    'url': None
+                    'url': f"https://duunitori.fi{card.get('href')}" if card.get('href') else None
                 }
-                
-                # Extract job title
-                title_elem = (card.find('h3', class_='job-box__title') or 
-                             card.find('h2', class_='job-box__title') or
-                             card.find(class_=re.compile(r'job.*title|title', re.I)) or
-                             card.find(['h1', 'h2', 'h3', 'h4']))
-                
-                if title_elem:
-                    job_data['title'] = title_elem.get_text(strip=True)
-                
-                # Extract company name
-                company_elem = (card.find('div', class_='job-box__job-company') or
-                               card.find(class_=re.compile(r'company|employer|organization', re.I)) or
-                               card.find('span', class_='company'))
-                
-                if company_elem:
-                    job_data['name'] = company_elem.get_text(strip=True)
-                
-                # Alternative: look for company in nearby elements
-                if job_data['name'] == 'N/A':
-                    info_divs = card.find_all('div', class_=re.compile(r'info|detail|meta'))
-                    for div in info_divs:
-                        text = div.get_text(strip=True)
-                        if text and len(text) > 2 and len(text) < 100:
-                            if not any(keyword in text.lower() for keyword in ['päivä', 'day', 'ago', 'sitten']):
-                                job_data['name'] = text
-                                break
-                
-                # Extract location
-                location_elem = (card.find('div', class_='job-box__job-location') or
-                                card.find(class_=re.compile(r'location|address|city', re.I)))
-                if location_elem:
-                    job_data['workplace'] = location_elem.get_text(strip=True)
-                
-                # Extract URL
-                if card.name == 'a' and card.get('href'):
-                    href = card.get('href')
-                    if href.startswith('http'):
-                        job_data['url'] = href
-                    elif href.startswith('/'):
-                        job_data['url'] = f"https://duunitori.fi{href}"
-                    else:
-                        job_data['url'] = f"https://duunitori.fi/{href}"
-                
-                # Extract contact information
+                # Try email in card text first
                 card_text = card.get_text()
-                
                 email_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', card_text)
                 if email_match:
                     job_data['email'] = email_match.group()
                     job_data['contact'] = email_match.group()
+
+                 # If email not found, try fetching the job page
+                if not job_data['email'] and job_data['url']:
+                   try:
+                         resp2 = requests.get(job_data['url'], headers=headers, timeout=5)
+                         page_text = BeautifulSoup(resp2.content, 'html.parser').get_text(separator="\n")
+                         email_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', page_text)
+                         if email_match:
+                          job_data['email'] = email_match.group()
+                          job_data['contact'] = email_match.group()
+                   except Exception:
+                    pass
+
+                 # Append job_data to list
                 
-                phone_match = re.search(r'\+?358?\s*\(?0?\)?\s*\d{1,3}[\s-]?\d{3,4}[\s-]?\d{3,4}', card_text)
-                if phone_match:
-                    job_data['phone'] = phone_match.group().strip()
-                    if not job_data['contact']:
-                        job_data['contact'] = phone_match.group().strip()
-                
-                if job_data['title'] != 'N/A':
-                    jobs.append(job_data)
-                
-            except Exception as e:
+                jobs.append(job_data)
+            except Exception:
                 continue
-        
     except Exception as e:
         print(f"Scraping error: {e}")
-    
-    return jobs
 
+    return jobs
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
@@ -170,7 +116,7 @@ def home():
                              skill=skill, 
                              filtered=jobs, 
                              count=len(jobs))
-        return render_template("home.html", positions=COMMON_POSITIONS)
+    return render_template("home.html", positions=COMMON_POSITIONS)
 
 @app.route('/scrape', methods=['POST'])
 def scrape():
@@ -219,4 +165,4 @@ def send_request():
     return render_template("send.html", selected=selected_companies)
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='127.0.0.1', port=5000)
