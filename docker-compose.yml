@@ -1,24 +1,49 @@
-version: '3.8'
+version: "3.8"
 
 services:
+  app:
+    build: .
+    container_name: talent_map_app
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      MONGO_URI: mongodb://admin:password123@mongodb:27017/talent_map?authSource=admin
+    depends_on:
+      - mongodb
+    networks:
+      - talent_network
+
+  client:
+    build:
+      context: ./client
+      args:
+        CACHEBUST: ${CACHEBUST:-}
+    container_name: talent_map_client
+    restart: always
+    ports:
+      - "3000:4173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0 --port 4173
+    depends_on:
+      - app
+    networks:
+      - talent_network
+
   mongodb:
     image: mongo:latest
     container_name: talent_map_mongodb
     restart: always
     ports:
-      - "27017:27017"
+      - "27018:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password123
       MONGO_INITDB_DATABASE: talent_map
-    volumes:
-      - mongodb_data:/data/db
     networks:
       - talent_network
-
-volumes:
-  mongodb_data:
-    driver: local
 
 networks:
   talent_network:
