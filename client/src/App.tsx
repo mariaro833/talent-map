@@ -5,7 +5,9 @@ import Home from "./components/Home";
 import Results from "./components/Results";
 import Send from "./components/Send";
 
-function App(): JSX.Element {
+const theme = createTheme();
+
+function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
