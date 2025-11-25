@@ -102,27 +102,7 @@ export const JobForm = () => {
           sx={{ width: "100%", marginBottom: "1rem" }}
           renderInput={(params) => <TextField {...params} label="Provider" />}
         />
-        <Autocomplete
-          disablePortal
-          options={locationOptions}
-          value={location}
-          onChange={(event, newValue) => setLocation(newValue)}
-          sx={{ width: "100%", marginBottom: "1rem" }}
-          renderInput={(params) => <TextField {...params} label="Location" />}
-        />
-        <Autocomplete
-          disablePortal
-          options={providerOptions}
-          value={
-            providerOptions.find((option) => option.value === provider) || null
-          }
-          onChange={(event, newValue) =>
-            setProvider(newValue ? newValue.value : "")
-          }
-          getOptionLabel={(option) => option.label}
-          sx={{ width: "100%", marginBottom: "1rem" }}
-          renderInput={(params) => <TextField {...params} label="Provider" />}
-        />
+
         <Button
           type="submit"
           variant="contained"
