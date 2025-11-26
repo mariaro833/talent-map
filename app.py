@@ -159,24 +159,24 @@ def scrape():
         if not data:
             return jsonify({"error": "JSON payload required"}), 400
 
-        keyword = data.get("keyword", "").strip()
+        title = data.get("title", "").strip()
         provider = data.get("provider", "duunitori")
 
-        if not keyword:
-            return jsonify({"error": "Keyword is required"}), 400
+        if not title:
+            return jsonify({"error": "Title is required"}), 400
 
-        if len(keyword) > 100:
-            return jsonify({"error": "Keyword too long"}), 400
+        if len(title) > 100:
+            return jsonify({"error": "Title too long"}), 400
 
         if provider not in ["duunitori"]:
             return jsonify({"error": "Invalid provider"}), 400
 
-        jobs = scrape_duunitori(keyword)
+        jobs = scrape_duunitori(title)
 
         return jsonify(
             {
                 "total_vacancies": len(jobs),
-                "keyword": keyword,
+                "title": title,
                 "provider": provider,
                 "jobs": jobs,
             }

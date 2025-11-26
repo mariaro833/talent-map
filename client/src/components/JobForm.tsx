@@ -12,37 +12,33 @@ const jobOptions = [
   "Marketing Specialist",
 ];
 
-const locationOptions = ["Helsinki", "Tampere", "Turku", "Oulu", "Espoo"];
-
 const providerOptions = ["duunitori"];
 
 export const JobForm = () => {
-  const [jobRole, setJobRole] = useState(null);
-  const [location, setLocation] = useState(null);
-  const [provider, setProvider] = useState("duunitori");
+  const [jobRole, setJobRole] = useState<string | null>(null);
+  const [provider, setProvider] = useState<string | null>("duunitori");
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log("Submitting form");
     console.log("Job Role:", jobRole);
-    console.log("Location:", location);
     console.log("Provider:", provider);
 
-    if (!jobRole || !location) {
-      alert("Please select both job role and location");
+    if (!jobRole) {
+      alert("Please select a job role");
       return;
     }
 
-    const keyword = location ? `${jobRole} ${location}` : jobRole;
-    console.log("Keyword:", keyword);
+    const title = jobRole;
+    console.log("Title:", title);
 
     try {
       console.log("Fetching from backend...");
       const response = await fetch("http://localhost:5000/scrape", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ keyword, provider }),
+        body: JSON.stringify({ keyword: jobRole, provider: provider }),
       });
       console.log("Response status:", response.status);
       const data = await response.json();
@@ -53,7 +49,7 @@ export const JobForm = () => {
         navigate("/results", {
           state: {
             jobs: data.jobs,
-            skill: keyword,
+            skill: title,
             count: data.total_vacancies,
           },
         });
@@ -86,14 +82,7 @@ export const JobForm = () => {
           sx={{ width: "100%", marginBottom: "1rem" }}
           renderInput={(params) => <TextField {...params} label="Job Role" />}
         />
-        <Autocomplete
-          disablePortal
-          options={locationOptions}
-          value={location}
-          onChange={(event, newValue) => setLocation(newValue)}
-          sx={{ width: "100%", marginBottom: "1rem" }}
-          renderInput={(params) => <TextField {...params} label="Location" />}
-        />
+
         <Autocomplete
           disablePortal
           options={providerOptions}

@@ -74,7 +74,7 @@ function Results() {
   return (
     <Box sx={{ padding: 2 }}>
       <Typography variant="h4" gutterBottom>
-        Scraping Results
+        Search Results
       </Typography>
       <Typography variant="body1" gutterBottom>
         Found {count} job results
