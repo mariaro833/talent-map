@@ -1,18 +1,18 @@
-# 🎯 TalentMap - Job Scraper & Application Tracker
+# TalentMap - Job Scraper & Application Tracker
 
 This Flask web application was created as a fun training project to explore 
 web scraping methodologies using **BeautifulSoup4**, **Requests**, and other 
 Python libraries. 
 
 The application automates the internship search process by:
-- 🔍 Scraping job listings from Finnish job portals (Duunitori.fi)
-- 📊 Extracting and organizing company information
-- 📧 Collecting contact details (emails, phone numbers)
-- ✅ Streamlining the application workflow
+- Scraping job listings from Finnish job portals (Duunitori.fi)
+- Extracting and organizing company information
+- Collecting contact details (emails, phone numbers)
+- Streamlining the application workflow
 
 **Built with:** Flask, BeautifulSoup4, Requests, and a passion for automation! 
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -58,7 +58,7 @@ python app.py
 http://localhost:5000
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 talent-map-2/
@@ -80,7 +80,7 @@ talent-map-2/
 - **Frontend:** HTML5, CSS3, JavaScript
 - **Styling:** Custom CSS with gradient designs
 
-## 📋 Available Job Positions
+## Available Job Positions
 
 The app comes pre-configured with common tech positions:
 
@@ -101,7 +101,7 @@ The app comes pre-configured with common tech positions:
 - Database Administrator
 - Custom position (user input)
 
-## 🎨 Features in Detail
+## Features in Detail
 
 ### Home Page
 - Dropdown menu with pre-defined positions
@@ -145,7 +145,7 @@ Modify the last line in `app.py`:
 app.run(debug=True, host='0.0.0.0', port=5000)  # Change port here
 ```
 
-## 📝 Usage
+## Usage
 
 1. **Select a Position**
    - Choose from dropdown or select "Other (Custom)" for custom input
@@ -191,7 +191,7 @@ netstat -ano | findstr :5000
 taskkill /PID <PID> /F
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
@@ -205,15 +205,15 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 👥 Authors
+## Authors
 
 - **Maria Rohnonen, Tatiana Orlova**
 
-## 📞 Support
+## Support
 
 If you have any questions or run into issues, please open an issue on GitHub.
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 - [ ] Add more job providers (LinkedIn, Indeed, etc.)
 - [ ] Email integration for sending applications
@@ -224,7 +224,7 @@ If you have any questions or run into issues, please open an issue on GitHub.
 - [ ] Email templates for applications
 - [ ] Advanced filtering options
 
-## 📊 Version History
+## Version History
 
 - **v1.0.0** - Initial release
   - Basic job scraping functionality
@@ -233,4 +233,4 @@ If you have any questions or run into issues, please open an issue on GitHub.
 
 ---
 
-Made with ❤️ and ☕ for job seekers in Finland
+Created with Love for job seekers in Finland
